@@ -16,6 +16,10 @@ class Ray {
             return dir;
         }
 
+        Vec3 origin() const {
+            return start;
+        }
+
     private:
         Vec3 dir;
         Vec3 start;

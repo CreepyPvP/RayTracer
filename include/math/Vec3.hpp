@@ -23,6 +23,10 @@ class Vec3 {
             return sqrt(lengthSquared()); 
         }
 
+        double sum() const {
+            return value[0] + value[1] + value[2];
+        }
+
         // operators
 
         double operator[](int i) const { return value[i]; }

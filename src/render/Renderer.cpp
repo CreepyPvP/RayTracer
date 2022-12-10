@@ -23,7 +23,7 @@ void Renderer::render() const {
             double offsetX = x / double(outputWidth) * 2 - 1;
             double offsetY = -(y / double(outputHeight) * 2 - 1);
 
-            Ray ray(facing * focalLength + offsetX * right + offsetY * up, origin);
+            Ray ray(facing * focalLength + offsetX * right * viewportWidth + offsetY * up * viewportHeight, origin);
             printColor(raycast(ray));
         }
 
@@ -33,6 +33,22 @@ void Renderer::render() const {
 
 
 Vec3 Renderer::raycast(const Ray& ray) const {
+    Vec3 circleMiddle(0, 0, -3);
+    double radius = 1;
+
+    double aTerm = ray.direction().lengthSquared();
+    
+    Vec3 bRay = ray.origin() * ray.direction();
+    Vec3 bCircle = circleMiddle * ray.direction();
+    double bTerm = 2 * (bRay.sum() - bCircle.sum());
+
+    Vec3 cRayCircle = ray.origin() * circleMiddle;
+    double cTerm = -(radius * radius) + ray.origin().lengthSquared() - 2 * cRayCircle.sum() + circleMiddle.lengthSquared();
+
+    double determinant = bTerm * bTerm - 4 * aTerm * cTerm;
+
+    if(determinant >= 0) return Vec3(1, 0, 0);
+
     // TODO: Account for rotation of the camera
     double lerp = (toUnit(ray.direction())[1] + 1) / 2;
     return lerp * skyboxColor0 + (1 - lerp) * skyboxColor1;
