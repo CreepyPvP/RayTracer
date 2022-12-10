@@ -87,6 +87,9 @@ inline double dot(const Vec3& a, const Vec3& b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
+inline Vec3 toUnit(const Vec3& a) {
+    return a / a.length();
+}
 
 
 inline void printColor(const Vec3& color) {

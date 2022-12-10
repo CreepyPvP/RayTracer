@@ -16,11 +16,6 @@ void Renderer::render() const {
     
     double focalLength = 1;
 
-    // Skybox
-    Vec3 upperColor(0, 0, 1);   // blue
-    Vec3 lowerColor(1, 1, 1);   // white
-
-
     // Rendering
     std::cout << "P3\n" << outputWidth << " " << outputHeight << "\n255" << std::endl;
     for(int y = 0; y < outputHeight; y++) {
@@ -29,9 +24,16 @@ void Renderer::render() const {
             double offsetY = -(y / double(outputHeight) * 2 - 1);
 
             Ray ray(facing * focalLength + offsetX * right + offsetY * up, origin);
-            printColor(ray.direction());
+            printColor(raycast(ray));
         }
 
         std::cout << std::endl;
     }
+}
+
+
+Vec3 Renderer::raycast(const Ray& ray) const {
+    // TODO: Account for rotation of the camera
+    double lerp = (toUnit(ray.direction())[1] + 1) / 2;
+    return lerp * skyboxColor0 + (1 - lerp) * skyboxColor1;
 }
