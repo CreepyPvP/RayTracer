@@ -16,5 +16,7 @@ int main() {
     int height = width * 9 / 16;
 
     Renderer r(width, height, 2, Vec3(0.5, 0.7, 1.0), Vec3(1, 1, 1));
+    r.initialize();
     r.render();
+    r.dispose();
 }

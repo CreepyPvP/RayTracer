@@ -4,6 +4,7 @@
 
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
+#include "objects/SceneRenderable.hpp"
 
 class Renderer {
     public:
@@ -15,6 +16,10 @@ class Renderer {
             viewportHeight(viewportWidth * height / width),
             skyboxColor0(skyboxUpperColor),
             skyboxColor1(skyboxLowerColor) {}
+
+        void initialize();
+
+        void dispose();
 
         void render() const;
 
@@ -29,6 +34,9 @@ class Renderer {
 
         Vec3 skyboxColor0;
         Vec3 skyboxColor1;
+
+        Renderable* renderable;
+
 };
 
 

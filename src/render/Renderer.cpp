@@ -1,9 +1,29 @@
 #include "render/Renderer.hpp"
 
 #include <iostream>
+#include <cmath>
 
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
+#include "objects/Renderable.hpp"
+#include "objects/Sphere.hpp"
+
+using std::sqrt;
+
+
+void Renderer::initialize() {
+    auto scene = new SceneRenderable();
+
+    Sphere sphere(Vec3(0, 0, -3), 1);
+    scene->add(sphere);
+
+    renderable = scene;
+}
+
+
+void Renderer::dispose() {
+    delete renderable;
+}
 
 
 void Renderer::render() const {
@@ -33,21 +53,10 @@ void Renderer::render() const {
 
 
 Vec3 Renderer::raycast(const Ray& ray) const {
-    Vec3 circleMiddle(0, 0, -3);
-    double radius = 1;
-
-    double aTerm = ray.direction().lengthSquared();
-    
-    Vec3 bRay = ray.origin() * ray.direction();
-    Vec3 bCircle = circleMiddle * ray.direction();
-    double bTerm = 2 * (bRay.sum() - bCircle.sum());
-
-    Vec3 cRayCircle = ray.origin() * circleMiddle;
-    double cTerm = -(radius * radius) + ray.origin().lengthSquared() - 2 * cRayCircle.sum() + circleMiddle.lengthSquared();
-
-    double determinant = bTerm * bTerm - 4 * aTerm * cTerm;
-
-    if(determinant >= 0) return Vec3(1, 0, 0);
+    RenderableHit hit;
+    if(renderable->hit(ray, 0, 100, hit)) {
+        return (hit.normal + 1) / 2;
+    }
 
     // TODO: Account for rotation of the camera
     double lerp = (toUnit(ray.direction())[1] + 1) / 2;
