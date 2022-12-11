@@ -23,7 +23,7 @@ class Renderer {
 
         void render() const;
 
-        Vec3 raycast(const Ray& ray) const;
+        Vec3 raycast(const Ray& ray, int depth) const;
 
     private:
         int outputWidth;

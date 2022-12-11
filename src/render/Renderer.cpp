@@ -1,5 +1,9 @@
 #include "render/Renderer.hpp"
 
+
+#define SAMPLES 100
+#define REFLECTION_DEPTH 20
+
 #include <iostream>
 #include <cmath>
 #include <memory>
@@ -38,29 +42,27 @@ void Renderer::dispose() {
 void Renderer::render() const {
     // TODO move all this stuff to seperate camera interface
     // Camera
-    Vec3 origin(0, 1, 5);
+    Vec3 origin(0, 1, 3);
     Vec3 facing(0, 0, -1);
     Vec3 up(0, 1, 0);
     Vec3 right(1, 0, 0);
     
     double focalLength = 1;
 
-    int samples = 100;
-
     // Rendering
     std::cout << "P3\n" << outputWidth << " " << outputHeight << "\n255" << std::endl;
     for(int y = 0; y < outputHeight; y++) {
         for(int x = 0; x < outputWidth; x++) {
             Vec3 color(0,0,0);
-            for(int s = 0; s < samples; s++) {
-                double offsetX = (x + random_double()) / double(outputWidth) * 2 - 1;
-                double offsetY = -((y + random_double()) / double(outputHeight) * 2 - 1);
+            for(int s = 0; s < SAMPLES; s++) {
+                double offsetX = (x + randomDouble()) / double(outputWidth) * 2 - 1;
+                double offsetY = -((y + randomDouble()) / double(outputHeight) * 2 - 1);
 
                 Ray ray(facing * focalLength + offsetX * right * viewportWidth + offsetY * up * viewportHeight, origin);
-                color += raycast(ray);
+                color += raycast(ray, 0);
             }
 
-            printColor(color / samples);
+            printColor(color / SAMPLES);
         }
 
         std::cout << std::endl;
@@ -68,10 +70,15 @@ void Renderer::render() const {
 }
 
 
-Vec3 Renderer::raycast(const Ray& ray) const {
+Vec3 Renderer::raycast(const Ray& ray, int depth) const {
+    if(depth >= REFLECTION_DEPTH) {
+        return Vec3(0,0,0);
+    }
+
     RenderableHit hit;
-    if(renderable->hit(ray, 0, 10000, hit)) {
-        return (hit.normal + 1) / 2;
+    if(renderable->hit(ray, 0.0001, INFINITY, hit)) {
+        Ray refelction(hit.normal + randomUnitCircle(), hit.position);
+        return 0.5 * raycast(refelction, depth + 1);
     }
 
     // TODO: Account for rotation of the camera

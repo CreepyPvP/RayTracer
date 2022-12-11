@@ -105,9 +105,9 @@ inline Vec3 toUnit(const Vec3& a) {
 
 
 inline void printColor(const Vec3& color) {
-    std::cout << static_cast<int>(color[0] *255.99) << " " <<
-        static_cast<int>(color[1] * 255.99) << " " <<
-        static_cast<int>(color[2] * 255.99) << " ";
+    std::cout << static_cast<int>(sqrt(color[0]) *255.99) << " " <<
+        static_cast<int>(sqrt(color[1]) * 255.99) << " " <<
+        static_cast<int>(sqrt(color[2]) * 255.99) << " ";
 }
 
 #endif
