@@ -15,7 +15,7 @@ class Plane: public Renderable {
         virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
 
     private:
-
+ 
         Vec3 normal;
 
 };

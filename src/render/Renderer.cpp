@@ -9,6 +9,7 @@
 #include "objects/Renderable.hpp"
 #include "objects/Sphere.hpp"
 #include "objects/Plane.hpp"
+#include "math/Random.hpp"
 
 using std::sqrt;
 using std::shared_ptr;
@@ -19,7 +20,7 @@ void Renderer::initialize() {
     auto scene = new SceneRenderable();
 
     for(int i = 0; i <= 0; i++) {
-        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 1, -3), 1);
+        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 1, 0), 1);
         scene->add(sphere);
     }
     shared_ptr<Renderable> ground = make_shared<Plane>(Vec3(0, 1, 0));
@@ -37,22 +38,29 @@ void Renderer::dispose() {
 void Renderer::render() const {
     // TODO move all this stuff to seperate camera interface
     // Camera
-    Vec3 origin(0, 1, -1);
+    Vec3 origin(0, 1, 5);
     Vec3 facing(0, 0, -1);
     Vec3 up(0, 1, 0);
     Vec3 right(1, 0, 0);
     
     double focalLength = 1;
 
+    int samples = 100;
+
     // Rendering
     std::cout << "P3\n" << outputWidth << " " << outputHeight << "\n255" << std::endl;
     for(int y = 0; y < outputHeight; y++) {
         for(int x = 0; x < outputWidth; x++) {
-            double offsetX = x / double(outputWidth) * 2 - 1;
-            double offsetY = -(y / double(outputHeight) * 2 - 1);
+            Vec3 color(0,0,0);
+            for(int s = 0; s < samples; s++) {
+                double offsetX = (x + random_double()) / double(outputWidth) * 2 - 1;
+                double offsetY = -((y + random_double()) / double(outputHeight) * 2 - 1);
 
-            Ray ray(facing * focalLength + offsetX * right * viewportWidth + offsetY * up * viewportHeight, origin);
-            printColor(raycast(ray));
+                Ray ray(facing * focalLength + offsetX * right * viewportWidth + offsetY * up * viewportHeight, origin);
+                color += raycast(ray);
+            }
+
+            printColor(color / samples);
         }
 
         std::cout << std::endl;
