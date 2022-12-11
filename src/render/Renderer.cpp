@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <memory>
 
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
@@ -9,13 +10,17 @@
 #include "objects/Sphere.hpp"
 
 using std::sqrt;
+using std::shared_ptr;
+using std::make_shared;
 
 
 void Renderer::initialize() {
     auto scene = new SceneRenderable();
 
-    Sphere sphere(Vec3(0, 0, -3), 1);
-    scene->add(sphere);
+    for(int i = -5; i < 5; i++) {
+        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 0, -3), 1);
+        scene->add(sphere);
+    }
 
     renderable = scene;
 }

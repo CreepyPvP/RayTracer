@@ -2,10 +2,12 @@
 #define SCENE_RENDERABLE_H
 
 #include <vector>
+#include <memory>
 
 #include "objects/Renderable.hpp"
 
 using std::vector;
+using std::shared_ptr;
 
 
 class SceneRenderable: public Renderable {
@@ -15,14 +17,14 @@ class SceneRenderable: public Renderable {
 
         }
 
-        void add(const Renderable& renderable) {
+        void add(shared_ptr<Renderable> renderable) {
             renderables.push_back(renderable);
         }
 
-        bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
+        virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
 
     private:
-        vector<Renderable> renderables;
+        vector<shared_ptr<Renderable>> renderables;
 
 };
 

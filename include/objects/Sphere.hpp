@@ -14,7 +14,7 @@ class Sphere: public Renderable {
 
         Sphere(Vec3 center, double radius): center(center), radius(radius) {}
 
-        bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
+        virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
 
     private:
     

@@ -17,8 +17,10 @@ struct RenderableHit {
 class Renderable {
     public:
 
-        virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const { 
-            return false; 
+        Renderable() {}
+
+        virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const {
+            return false;
         };
 
     private:
