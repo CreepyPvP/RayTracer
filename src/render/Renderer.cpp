@@ -1,7 +1,7 @@
 #include "render/Renderer.hpp"
 
 
-#define SAMPLES 400
+#define SAMPLES 100
 #define REFLECTION_DEPTH 20
 
 #include <iostream>
@@ -14,6 +14,8 @@
 #include "objects/Sphere.hpp"
 #include "objects/Plane.hpp"
 #include "math/Random.hpp"
+#include "materials/DiffuseMaterial.hpp"
+
 
 using std::sqrt;
 using std::shared_ptr;
@@ -23,13 +25,27 @@ using std::make_shared;
 void Renderer::initialize() {
     auto scene = new SceneRenderable();
 
-    Material white = diffuse(Vec3(0.5, 0.5, 0.5));
-    Material red = diffuse(Vec3(0.5, 0.1, 0.1));
+    DiffuseMaterial test(Vec3(0.0, 1.0, 0.0));
+    auto ts = &test;
 
-    for(int i = 0; i <= 0; i++) {
-        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 1, 0), 1, red);
-        scene->add(sphere);
-    }
+    test.getColor();
+    ts->getColor();
+
+    auto white = make_shared<DiffuseMaterial>(Vec3(0.5, 0.5, 0.5));
+    white->getColor();
+    auto red = make_shared<DiffuseMaterial>(Vec3(0.5, 0.1, 0.1));
+    auto blue = make_shared<DiffuseMaterial>(Vec3(0.1, 0.1, 0.5));
+
+
+    shared_ptr<Renderable> sphereRed = make_shared<Sphere>(Vec3(-2, 1, 0), 1, red);
+    scene->add(sphereRed);
+
+    shared_ptr<Renderable> sphereBlue = make_shared<Sphere>(Vec3(0, 1, 0), 1, blue);
+    scene->add(sphereBlue);
+
+    shared_ptr<Renderable> sphereBlue1 = make_shared<Sphere>(Vec3(-2, 1, 4), 1, blue);
+    scene->add(sphereBlue1);
+
     shared_ptr<Renderable> ground = make_shared<Plane>(Vec3(0, 1, 0), white);
     scene->add(ground);
 
@@ -69,6 +85,7 @@ void Renderer::render() const {
         }
 
         std::cout << std::endl;
+        std::cerr << "Rendering: " << y / double(outputHeight) * 100 << "%" << std::endl;
     }
 }
 
@@ -80,8 +97,12 @@ Vec3 Renderer::raycast(const Ray& ray, int depth) const {
 
     RenderableHit hit;
     if(renderable->hit(ray, 0.0001, INFINITY, hit)) {
-        Ray refelction(hit.normal + randomUnitCircle(), hit.position);
-        return hit.material.diffuse * raycast(refelction, depth + 1);
+
+        // Ray refelction(reflect(ray.direction(), hit.normal) + hit.material.metallic * randomUnitCircle(), hit.position);
+        Vec3 scatteredDir(0,0,0);
+        hit.material->scatter(ray, hit.normal, scatteredDir);
+        Ray scatteredRay(scatteredDir, hit.position);
+        return hit.material->getColor() * raycast(scatteredRay, depth + 1);
     }
 
     // TODO: Account for rotation of the camera

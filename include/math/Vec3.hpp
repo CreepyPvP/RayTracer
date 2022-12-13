@@ -103,6 +103,10 @@ inline Vec3 toUnit(const Vec3& a) {
     return a / a.length();
 }
 
+inline Vec3 reflect(const Vec3& a, const Vec3& n) {
+    return -2 * n * dot(a, n) + a;
+}
+
 
 inline void printColor(const Vec3& color) {
     std::cout << static_cast<int>(sqrt(color[0]) *255.99) << " " <<

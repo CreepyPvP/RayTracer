@@ -2,10 +2,14 @@
 #define RENDERABLE_H
 
 #include <iostream>
+#include <memory>
 
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
 #include "materials/Material.hpp"
+
+
+using std::shared_ptr;
 
 
 struct RenderableHit {
@@ -13,7 +17,7 @@ struct RenderableHit {
     Vec3 position;
     Vec3 normal;
 
-    Material material;
+    shared_ptr<Material> material;
 };
 
 
