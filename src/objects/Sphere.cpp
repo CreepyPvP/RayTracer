@@ -28,6 +28,7 @@ bool Sphere::hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) c
 
     hit.position = ray.at(hit.t);
     hit.normal = toUnit(hit.position - center);
+    hit.material = material;
 
     return true;
 }

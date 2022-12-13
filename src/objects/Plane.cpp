@@ -16,6 +16,7 @@ bool Plane::hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) co
 
     hit.position = ray.at(hit.t);
     hit.normal = normal;
+    hit.material = material;
 
     return true;
 }

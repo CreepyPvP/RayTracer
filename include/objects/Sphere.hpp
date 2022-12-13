@@ -5,6 +5,7 @@
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
 
+#include "materials/Material.hpp"
 #include "objects/Renderable.hpp"
 
 
@@ -12,7 +13,7 @@ class Sphere: public Renderable {
 
     public:
 
-        Sphere(Vec3 center, double radius): center(center), radius(radius) {}
+        Sphere(Vec3 center, double radius, Material material): center(center), radius(radius), material(material) {}
 
         virtual bool hit(const Ray& ray, double tMin, double tMax, RenderableHit& hit) const override;
 
@@ -20,6 +21,8 @@ class Sphere: public Renderable {
     
         Vec3 center;
         double radius;
+
+        Material material;
 
 };
 

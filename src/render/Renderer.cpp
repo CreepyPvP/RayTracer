@@ -1,7 +1,7 @@
 #include "render/Renderer.hpp"
 
 
-#define SAMPLES 100
+#define SAMPLES 400
 #define REFLECTION_DEPTH 20
 
 #include <iostream>
@@ -23,11 +23,14 @@ using std::make_shared;
 void Renderer::initialize() {
     auto scene = new SceneRenderable();
 
+    Material white = diffuse(Vec3(0.5, 0.5, 0.5));
+    Material red = diffuse(Vec3(0.5, 0.1, 0.1));
+
     for(int i = 0; i <= 0; i++) {
-        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 1, 0), 1);
+        shared_ptr<Renderable> sphere = make_shared<Sphere>(Vec3(2 * i, 1, 0), 1, red);
         scene->add(sphere);
     }
-    shared_ptr<Renderable> ground = make_shared<Plane>(Vec3(0, 1, 0));
+    shared_ptr<Renderable> ground = make_shared<Plane>(Vec3(0, 1, 0), white);
     scene->add(ground);
 
     renderable = scene;
@@ -78,7 +81,7 @@ Vec3 Renderer::raycast(const Ray& ray, int depth) const {
     RenderableHit hit;
     if(renderable->hit(ray, 0.0001, INFINITY, hit)) {
         Ray refelction(hit.normal + randomUnitCircle(), hit.position);
-        return 0.5 * raycast(refelction, depth + 1);
+        return hit.material.diffuse * raycast(refelction, depth + 1);
     }
 
     // TODO: Account for rotation of the camera

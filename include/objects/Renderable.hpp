@@ -5,12 +5,15 @@
 
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
+#include "materials/Material.hpp"
 
 
 struct RenderableHit {
     double t;
     Vec3 position;
     Vec3 normal;
+
+    Material material;
 };
 
 
