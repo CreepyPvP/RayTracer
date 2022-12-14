@@ -16,15 +16,11 @@ class DiffuseMaterial: public Material {
 
         DiffuseMaterial(Vec3 color): color(color) {}
 
-        void scatter(const Ray& ray, const Vec3& normal, Vec3& outDir) {
+        void scatter(const Ray& ray, const Vec3& normal, Vec3& outDir, Vec3& c) {
             outDir = normal + randomUnitCircle();
-            std::cerr << "test" << std::endl;
+            c = color;
         }
 
-        Vec3 getColor() {
-            return color;
-            std::cerr << "ts2" << std::endl;
-        }
 
     private:
 

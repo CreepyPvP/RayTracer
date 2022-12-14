@@ -15,6 +15,7 @@
 #include "objects/Plane.hpp"
 #include "math/Random.hpp"
 #include "materials/DiffuseMaterial.hpp"
+#include "materials/ReflectiveMaterial.hpp"
 
 
 using std::sqrt;
@@ -25,15 +26,8 @@ using std::make_shared;
 void Renderer::initialize() {
     auto scene = new SceneRenderable();
 
-    DiffuseMaterial test(Vec3(0.0, 1.0, 0.0));
-    auto ts = &test;
-
-    test.getColor();
-    ts->getColor();
-
     auto white = make_shared<DiffuseMaterial>(Vec3(0.5, 0.5, 0.5));
-    white->getColor();
-    auto red = make_shared<DiffuseMaterial>(Vec3(0.5, 0.1, 0.1));
+    auto red = make_shared<ReflectiveMaterial>(Vec3(0.5, 0.1, 0.1));
     auto blue = make_shared<DiffuseMaterial>(Vec3(0.1, 0.1, 0.5));
 
 
@@ -97,12 +91,13 @@ Vec3 Renderer::raycast(const Ray& ray, int depth) const {
 
     RenderableHit hit;
     if(renderable->hit(ray, 0.0001, INFINITY, hit)) {
-
         // Ray refelction(reflect(ray.direction(), hit.normal) + hit.material.metallic * randomUnitCircle(), hit.position);
+        
         Vec3 scatteredDir(0,0,0);
-        hit.material->scatter(ray, hit.normal, scatteredDir);
+        Vec3 color(0,0,0);
+        hit.material->scatter(ray, hit.normal, scatteredDir, color);
         Ray scatteredRay(scatteredDir, hit.position);
-        return hit.material->getColor() * raycast(scatteredRay, depth + 1);
+        return color * raycast(scatteredRay, depth + 1);
     }
 
     // TODO: Account for rotation of the camera

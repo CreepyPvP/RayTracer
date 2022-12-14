@@ -15,18 +15,14 @@ class ReflectiveMaterial: public Material {
 
         ReflectiveMaterial(Vec3 color): color(color) {}
 
-        virtual void scatter(const Ray& ray, const Vec3& normal, Vec3& outDir) const override {
-            outDir = normal + randomUnitCircle();
-        }
-
-        virtual Vec3 getColor(Vec3& c) const {
-            return color;
-        }
+        void scatter(const Ray& ray, const Vec3& normal, Vec3& outDir, Vec3& c) {
+            outDir = reflect(ray.direction(), normal);
+            c = color;
+        }   
 
     private:
 
         Vec3 color;
-
 };
 
 

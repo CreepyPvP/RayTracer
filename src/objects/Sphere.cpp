@@ -1,5 +1,7 @@
 #include "objects/Sphere.hpp"
 
+#include <iostream>
+
 #include "math/Vec3.hpp"
 #include "math/Ray.hpp"
 
